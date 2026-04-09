@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+logs/
+models/
+*.zip
+test_frame.jpg
+frame.jpg
+/tmp/
+*.egg-info/
+.env

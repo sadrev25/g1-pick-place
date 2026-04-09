@@ -1,0 +1,13 @@
+{
+  "folders": [
+    {"path": "."}
+  ],
+  "settings": {
+    "python.defaultInterpreterPath": "~/waveye_demo/bin/python3",
+    "editor.fontSize": 14,
+    "files.exclude": {
+      "**/__pycache__": true,
+      "**/*.pyc": true
+    }
+  }
+}
