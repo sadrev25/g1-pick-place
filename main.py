@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from vision.detector import VisionPipeline
+from stable_baselines3 import PPO
 from brain         import process_command, validate_joints
 from body          import RobotBody
 from ik_controller import IKController
@@ -39,6 +40,15 @@ def run():
         robot.model, robot.data, robot.viewer)
     vision = VisionPipeline(
         robot.model, robot.data)
+
+    # Load residual RL policy
+    try:
+        residual_policy = PPO.load(
+            "models/best/best_model")
+        print("✅ Residual RL loaded!")
+    except Exception as e:
+        residual_policy = None
+        print(f"⚠️  No residual: {e}")
 
     print("\nCommands:")
     print("  'pick the red cube'    → right hand")
@@ -96,6 +106,51 @@ def run():
                                 robot.data)
                             print(f"Updated {obj} to {pos}")
                             break
+                # Apply residual
+                if False:  # disabled - v2 coming
+                    import numpy as _np
+                    import mujoco as _mj
+                    bid = _mj.mj_name2id(
+                        robot.model,
+                        _mj.mjtObj.mjOBJ_BODY,
+                        obj)
+                    _mj.mj_forward(
+                        robot.model,
+                        robot.data)
+                    hand = robot.data.xpos[
+                        ik.r_wrist].copy()
+                    obj_p = robot.data.xpos[
+                        bid].copy()
+                    tgt  = _np.array(POINT_B)
+                    # Obs must match training exactly
+                    # hand(3)+obj(3)+target(3)+phase(1)=10
+                    phase = _np.array([0.0])
+                    obs  = _np.concatenate([
+                        hand,
+                        obj_p,
+                        tgt,
+                        phase
+                    ]).astype(_np.float32)
+                    print(f"Obs: {obs.round(3)}")
+                    action, _ = (
+                        residual_policy
+                        .predict(obs,
+                        deterministic=True))
+                    # v1: action=[dx,dy,dz]
+                    # Apply as offset to object pos
+                    # so IK targets corrected position
+                    corrected = obj_p + action
+                    for j in range(
+                            robot.model.njnt):
+                        if robot.model.jnt_bodyid[j] == bid:
+                            adr = robot.model.jnt_qposadr[j]
+                            robot.data.qpos[adr:adr+3] = corrected
+                            _mj.mj_forward(
+                                robot.model,
+                                robot.data)
+                            break
+                    print(f"Residual: {action.round(3)}")
+                    print(f"Corrected pos: {corrected.round(3)}")
                 ik.pick_sequence(
                     obj,
                     place_pos=POINT_B)

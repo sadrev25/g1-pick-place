@@ -132,10 +132,8 @@ class IKController:
             time.sleep(0.002)
 
     def select_hand(self, obj_pos):
-        hand = ('right' if obj_pos[1] <= 0.05
-                else 'left')
-        print(f"   Hand: {hand} "
-              f"(y={obj_pos[1]:.3f})")
+        hand = 'right'
+        print(f'   Hand: {hand} (y={obj_pos[1]:.3f})')
         return hand
 
     def get_ee_pos(self, hand='right'):
