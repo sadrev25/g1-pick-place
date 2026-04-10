@@ -1,3 +1,22 @@
+User: "pick the red cube"
+↓
+Camera captures scene
+↓
+GPT-4o identifies object → "red cube"
+↓
+OpenCV finds pixel position → (315, 244)
+↓
+Camera matrix → world xyz [0.243, -0.174, 0.878]
+↓
+Damped Least Squares IK → arm moves
+↓
+Wrist rotates down → palm faces table
+↓
+Teleport grasp → cube attaches to palm
+↓
+Lift → Move → Place ✅
+
+
 # G1 Humanoid Pick and Place
 ## What's Built
 - **Vision**: GPT-4o + OpenCV color detection
