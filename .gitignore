@@ -27,3 +27,5 @@ reset_scene.py
 rewrite_body.py
 update_main_vision.py
 integrate_camera.py
+demos.pkl
+bc_policy.pt
