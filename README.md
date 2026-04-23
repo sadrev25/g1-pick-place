@@ -47,3 +47,4 @@ Pick + Place ✅
 | Residual PPO | 20/20 | RL on top of IK |
 | BC Policy | 20/20 | Learned from 100 demos |
 | BC + PPO | 20/20 | True ResMimic architecture |
+https://youtube.com/shorts/keOu3wBcf0U?is=x48hLS0Ks8czAh0o
